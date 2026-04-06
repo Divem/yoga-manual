@@ -247,6 +247,75 @@ footer .brand{font-family:var(--font-d);font-style:italic;color:var(--accent);fo
   color:var(--fg2);line-height:1.7;border-left:3px solid var(--accent)}
 .d-note strong{color:var(--accent-h);font-weight:600}
 
+/* ─── PAGE VIEWS ─── */
+#pageView{display:none}
+#pageView.active{display:block}
+.page-back{display:flex;align-items:center;gap:8px;font-family:var(--font-u);font-size:14px;font-weight:500;
+  color:var(--fg2);background:none;border:none;padding:8px 0;cursor:pointer;margin-bottom:4px}
+.page-back:active{opacity:.5}
+.page-back svg{width:20px;height:20px}
+.page-title{font-family:var(--font-d);font-size:clamp(26px,6vw,34px);font-weight:500;color:var(--fg);line-height:1.3;margin-bottom:4px}
+.page-en{font-family:var(--font-d);font-size:14px;font-style:italic;color:var(--fg3);margin-bottom:16px}
+.page-info{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap}
+.page-badge{font-family:var(--font-u);font-size:12px;font-weight:500;padding:5px 14px;border-radius:100px;
+  background:var(--bg);color:var(--fg2)}
+
+/* Lesson list */
+.lesson-list{display:flex;flex-direction:column;gap:10px;padding-bottom:40px}
+.lesson-card{background:var(--bg-card);border-radius:var(--radius);padding:18px 20px;
+  box-shadow:var(--shadow);cursor:pointer;transition:all .2s;display:flex;gap:16px;align-items:center}
+.lesson-card:active{transform:scale(.985);transition-duration:.1s}
+.lc-num{font-family:var(--font-d);font-size:28px;font-weight:300;color:var(--fg3);min-width:40px;text-align:center;line-height:1}
+.lc-body{flex:1;min-width:0}
+.lc-body h3{font-family:var(--font-u);font-size:15px;font-weight:600;color:var(--fg);line-height:1.4;margin-bottom:2px}
+.lc-body .lc-sub{font-size:13px;color:var(--fg3);margin-bottom:4px}
+.lc-body .lc-desc{font-size:13px;color:var(--fg2);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.lc-pose{flex-shrink:0;width:60px;opacity:.85}
+.lc-arrow{color:var(--fg3);font-size:18px;flex-shrink:0}
+
+/* Lesson detail */
+.ld-hero{display:flex;justify-content:center;padding:8px 0 20px}
+.ld-hero-inner{position:relative}
+.ld-hero .ld-hero-label{position:absolute;bottom:4px;left:50%;transform:translateX(-50%);
+  font-family:var(--font-u);font-size:11px;font-weight:600;color:var(--fg3);letter-spacing:.06em;white-space:nowrap}
+
+.ld-section{margin-bottom:24px}
+.ld-label{font-family:var(--font-u);font-size:11px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+
+/* Pose grid */
+.pose-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(min-width:480px){.pose-grid{grid-template-columns:repeat(4,1fr)}}
+@media(min-width:768px){.pose-grid{grid-template-columns:repeat(5,1fr)}}
+.pose-card{background:var(--bg-card);border-radius:12px;padding:10px 6px 8px;text-align:center;
+  box-shadow:0 1px 4px rgba(42,42,40,.04);transition:transform .2s}
+.pose-card svg{margin:0 auto 4px}
+.pose-card .pc-name{font-family:var(--font-u);font-size:12px;font-weight:600;color:var(--fg);line-height:1.3}
+.pose-card .pc-en{font-family:var(--font-d);font-size:10px;font-style:italic;color:var(--fg3);line-height:1.2}
+
+/* Sequence timeline */
+.seq-list{position:relative;padding-left:20px}
+.seq-list::before{content:'';position:absolute;left:5px;top:8px;bottom:8px;width:1.5px;background:var(--border)}
+.seq-item{position:relative;padding:6px 0 6px 16px}
+.seq-item::before{content:'';position:absolute;left:-19px;top:14px;width:9px;height:9px;
+  border-radius:50%;border:2px solid var(--accent);background:var(--bg-card)}
+.seq-step{font-family:var(--font-u);font-size:14px;font-weight:600;color:var(--fg);line-height:1.4}
+.seq-dur{font-family:var(--font-u);font-size:12px;color:var(--accent);font-weight:500;margin-left:8px}
+.seq-note{font-size:13px;color:var(--fg2);line-height:1.6;margin-top:2px}
+
+/* Key points */
+.kp-list{list-style:none}
+.kp-list li{padding:8px 0 8px 24px;position:relative;font-size:14px;color:var(--fg2);line-height:1.7}
+.kp-list li::before{content:'';position:absolute;left:0;top:15px;width:8px;height:8px;
+  border-radius:2px;background:var(--primary);transform:rotate(45deg)}
+
+/* Safety note */
+.safety-note{background:#FFF3ED;border-radius:12px;padding:14px 16px;font-size:13px;
+  color:var(--fg2);line-height:1.7;border-left:3px solid var(--accent);margin-top:8px}
+.safety-note strong{color:var(--accent-h);font-weight:600}
+
+.ld-desc{font-size:15px;color:var(--fg2);line-height:1.8;margin-bottom:4px}
+
 /* ─── RESPONSIVE ─── */
 @media(min-width:640px){
   .cards{grid-template-columns:1fr 1fr;gap:14px}
@@ -311,8 +380,11 @@ footer .brand{font-family:var(--font-d);font-style:italic;color:var(--accent);fo
 <!-- COURSE SECTIONS -->
 <main id="main"></main>
 
+<!-- LESSON PAGE VIEW -->
+<div id="pageView"></div>
+
 <!-- LEARNING PATH -->
-<section class="path" id="path">
+<section class="path" id="pathSection">
   <h2>推荐学习路径</h2>
   <div class="path-nodes">
     <div class="path-node" data-idx="1">
@@ -367,6 +439,10 @@ footer .brand{font-family:var(--font-d);font-style:italic;color:var(--accent);fo
   <div class="sheet-body" id="sheetBody"></div>
 </div>
 
+<script src="data/poses.js"></script>
+<script src="data/lessons-foundation.js"></script>
+<script src="data/lessons-progressive.js"></script>
+<script src="data/lessons-workshop.js"></script>
 <script>
 // ─── DATA ───
 const CATEGORIES = [
@@ -609,10 +685,19 @@ function renderCourses(){
   observeCards();
 }
 
+function getLessons(courseId){
+  if(typeof FOUNDATION_LESSONS!=='undefined'&&FOUNDATION_LESSONS[ courseId])return FOUNDATION_LESSONS[ courseId];
+  if(typeof PROGRESSIVE_LESSONS!=='undefined'&&PROGRESSIVE_LESSONS[ courseId])return PROGRESSIVE_LESSONS[ courseId];
+  if(typeof WORKSHOP_LESSONS!=='undefined'&&WORKSHOP_LESSONS[ courseId])return WORKSHOP_LESSONS[ courseId];
+  return null;
+}
+
 function renderCard(c){
   const lvl=Array.isArray(c.level)?c.level[0]:c.level;
   const lvlMax=4;
-  return `<div class="course-card" data-cat="${c.cat}" data-id="${c.id}" onclick="openSheet('${c.id}')">
+  const hasLessons=!!getLessons(c.id);
+  const click=hasLessons?`onclick="navigateTo('course','${c.id}')"`:`onclick="openSheet('${c.id}')"`;
+  return `<div class="course-card" data-cat="${c.cat}" data-id="${c.id}" ${click}>
     <div class="card-top">
       <div class="card-title">
         <h3>${c.name}</h3>
@@ -623,7 +708,7 @@ function renderCard(c){
     <div class="card-desc">${c.desc}</div>
     <div class="card-meta">
       <span class="card-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>${c.duration}min</span>
-      <span class="card-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>${c.audience.split('、')[0]}</span>
+      <span class="card-tag">${hasLessons?getLessons(c.id).length+' 节课':c.audience.split('、')[0]}</span>
     </div>
   </div>`;
 }
@@ -753,9 +838,178 @@ window.addEventListener('scroll',()=>{
   document.getElementById('nav').classList.toggle('scrolled',window.scrollY>10);
 },{passive:true});
 
+// ─── ROUTER ───
+const MAIN_EL=document.getElementById('main');
+const PATH_EL=document.getElementById('pathSection')||document.querySelector('.path');
+const FOOTER_EL=document.querySelector('footer');
+const PAGE_EL=document.getElementById('pageView');
+const HERO_EL=document.querySelector('.hero');
+const CATBAR_EL=document.getElementById('catBar');
+
+function navigateTo(view, ...args){
+  let hash;
+  if(view==='course')hash=`#/course/${args[0]}`;
+  else if(view==='lesson')hash=`#/lesson/${args[0]}/${args[1]}`;
+  else hash='#/';
+  location.hash=hash;
+}
+
+function showHome(){
+  PAGE_EL.classList.remove('active');
+  PAGE_EL.innerHTML='';
+  MAIN_EL.style.display='';
+  if(PATH_EL)PATH_EL.style.display='';
+  if(FOOTER_EL)FOOTER_EL.style.display='';
+  if(CATBAR_EL)CATBAR_EL.style.display='';
+  if(HERO_EL)HERO_EL.style.display='';
+  window.scrollTo(0,0);
+}
+
+function showPage(html){
+  MAIN_EL.style.display='none';
+  if(PATH_EL)PATH_EL.style.display='none';
+  if(FOOTER_EL)FOOTER_EL.style.display='none';
+  if(CATBAR_EL)CATBAR_EL.style.display='none';
+  if(HERO_EL)HERO_EL.style.display='none';
+  PAGE_EL.innerHTML=html;
+  PAGE_EL.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function renderCoursePage(courseId){
+  const c=COURSES.find(x=>x.id===courseId);
+  const lessons=getLessons(courseId);
+  if(!c||!lessons)return showHome();
+  const lvl=Array.isArray(c.level)?c.level[0]:c.level;
+  const lvlLabels=['','零基础','基础','进阶','高阶'];
+
+  const lessonCards=lessons.map(l=>{
+    const mainPose=l.poses&&l.poses[0]?renderPoseSvg(l.poses[0],{width:60,showLabel:false,color:c.cat==='foundation'?'#3A5248':c.cat==='progressive'?'#C4714B':'#8B6F4E'}):'';
+    return `<div class="lesson-card" onclick="navigateTo('lesson','${courseId}',${l.num})">
+      <div class="lc-num">${String(l.num).padStart(2,'0')}</div>
+      <div class="lc-body">
+        <h3>${l.title}</h3>
+        <div class="lc-sub">${l.subtitle||''}</div>
+        <div class="lc-desc">${l.desc||''}</div>
+      </div>
+      ${mainPose?`<div class="lc-pose">${mainPose}</div>`:''}
+      <div class="lc-arrow">›</div>
+    </div>`;
+  }).join('');
+
+  showPage(`
+    <div style="padding:calc(var(--nav-h) + 16px) 20px 40px;max-width:680px;margin:0 auto">
+      <button class="page-back" onclick="navigateTo('home')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        返回课程
+      </button>
+      <div class="page-title">${c.name}</div>
+      <div class="page-en">${c.nameEn}</div>
+      <div class="page-info">
+        <span class="page-badge">${lvlLabels[lvl]}</span>
+        <span class="page-badge">${c.duration}min / 节</span>
+        <span class="page-badge">${lessons.length} 节课</span>
+        ${c.prereq.length?`<span class="page-badge">需要: ${c.prereq.join('、')}</span>`:''}
+      </div>
+      <div class="lesson-list">${lessonCards}</div>
+    </div>
+  `);
+}
+
+function renderLessonPage(courseId,lessonNum){
+  const c=COURSES.find(x=>x.id===courseId);
+  const lessons=getLessons(courseId);
+  if(!c||!lessons)return showHome();
+  const l=lessons.find(x=>x.num===lessonNum);
+  if(!l)return showHome();
+  const accentColor=c.cat==='foundation'?'#3A5248':c.cat==='progressive'?'#C4714B':'#8B6F4E';
+
+  // Hero illustration - main pose
+  const heroPose=l.poses&&l.poses[0]?renderPoseSvg(l.poses[0],{width:200,showLabel:false,color:accentColor}):'';
+
+  // Pose grid
+  const poseGrid=l.poses?`<div class="pose-grid">${l.poses.map(pid=>{
+    const pose=POSES[pid];
+    if(!pose)return '';
+    const svg=renderPoseSvg(pid,{width:100,showLabel:false,color:accentColor});
+    return `<div class="pose-card">${svg}<div class="pc-name">${pose.name}</div><div class="pc-en">${pose.nameEn}</div></div>`;
+  }).join('')}</div>`:'';
+
+  // Sequence timeline
+  const seqHtml=l.sequence?`<div class="seq-list">${l.sequence.map(s=>`
+    <div class="seq-item">
+      <div><span class="seq-step">${s.step}</span><span class="seq-dur">${s.duration}</span></div>
+      <div class="seq-note">${s.note||''}</div>
+    </div>`).join('')}</div>`:'';
+
+  // Key points
+  const kpHtml=l.keyPoints?`<ul class="kp-list">${l.keyPoints.map(p=>`<li>${p}</li>`).join('')}</ul>`:'';
+
+  // Safety note
+  const safetyHtml=l.safetyNote?`<div class="safety-note"><strong>安全提示</strong><br>${l.safetyNote}</div>`:'';
+
+  // Objectives
+  const objHtml=l.objectives?`<ul class="kp-list">${l.objectives.map(o=>`<li>${o}</li>`).join('')}</ul>`:'';
+
+  const poseName=POSES[l.poses[0]]?POSES[l.poses[0]].name:'';
+
+  showPage(`
+    <div style="padding:calc(var(--nav-h) + 12px) 20px calc(32px + var(--safe-b));max-width:680px;margin:0 auto">
+      <button class="page-back" onclick="navigateTo('course','${courseId}')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        ${c.name}
+      </button>
+      <div class="page-title">第 ${l.num} 课：${l.title}</div>
+      <div class="page-en">${l.subtitle||''}</div>
+
+      ${l.desc?`<div class="ld-section"><p class="ld-desc">${l.desc}</p></div>`:''}
+
+      ${heroPose?`<div class="ld-hero"><div class="ld-hero-inner">${heroPose}</div></div>`:''}
+
+      ${l.poses&&l.poses.length?`
+      <div class="ld-section">
+        <div class="ld-label">本节课体式（${l.poses.length}）</div>
+        ${poseGrid}
+      </div>`:''}
+
+      ${l.objectives&&l.objectives.length?`
+      <div class="ld-section">
+        <div class="ld-label">学习目标</div>
+        ${objHtml}
+      </div>`:''}
+
+      ${l.sequence&&l.sequence.length?`
+      <div class="ld-section">
+        <div class="ld-label">课堂序列</div>
+        ${seqHtml}
+      </div>`:''}
+
+      ${l.keyPoints&&l.keyPoints.length?`
+      <div class="ld-section">
+        <div class="ld-label">教学要点</div>
+        ${kpHtml}
+      </div>`:''}
+
+      ${safetyHtml}
+    </div>
+  `);
+}
+
+function handleRoute(){
+  const hash=location.hash||'#/';
+  if(hash==='#/'||hash===''){showHome();return}
+  const m1=hash.match(/^#\/course\/(.+)$/);
+  if(m1){renderCoursePage(m1[1]);return}
+  const m2=hash.match(/^#\/lesson\/(.+)\/(\d+)$/);
+  if(m2){renderLessonPage(m2[1],parseInt(m2[2]));return}
+  showHome();
+}
+window.addEventListener('hashchange',handleRoute);
+
 // ─── INIT ───
 renderTabs();
 renderCourses();
+handleRoute();
 </script>
 </body>
 </html>
