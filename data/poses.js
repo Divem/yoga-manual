@@ -429,6 +429,22 @@ agnistambhasana: {
   kL:[75,192],kR:[125,192],fL:[65,230],fR:[135,230]
 },
 
+padmasana: {
+  name:'莲花坐', nameEn:'Lotus Pose', sanskrit:'Padmāsana', cat:'seated',
+  head:[100,25],neck:[100,42],sL:[85,58],sR:[115,58],
+  eL:[68,95],eR:[132,95],hL:[55,130],hR:[145,130],
+  hip:[100,150],hiL:[80,155],hiR:[120,155],
+  kL:[55,188],kR:[145,188],fL:[125,175],fR:[75,175]
+},
+
+utkata_konasana: {
+  name:'女神式', nameEn:'Goddess Pose', sanskrit:'Utkaṭa Koṇāsana', cat:'standing',
+  head:[100,22],neck:[100,40],sL:[85,56],sR:[115,56],
+  eL:[62,82],eR:[138,82],hL:[58,56],hR:[142,56],
+  hip:[100,148],hiL:[82,150],hiR:[118,150],
+  kL:[55,195],kR:[145,195],fL:[40,265],fR:[160,265]
+},
+
 kapotasana_prep: {
   name:'龙式', nameEn:'Dragon Pose', sanskrit:'Dragon Pose', cat:'hip',
   head:[100,80],neck:[100,95],sL:[85,108],sR:[115,108],
