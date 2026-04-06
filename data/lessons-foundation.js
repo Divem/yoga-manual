@@ -895,4 +895,3 @@ const FOUNDATION_LESSONS = {
   ]
 };
 
-export default FOUNDATION_LESSONS;

@@ -1218,4 +1218,3 @@ const PROGRESSIVE_LESSONS = {
   ]
 };
 
-export default PROGRESSIVE_LESSONS;

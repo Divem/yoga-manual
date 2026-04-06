@@ -411,4 +411,3 @@ const WORKSHOP_LESSONS = {
 
 }; // WORKSHOP_LESSONS
 
-export default WORKSHOP_LESSONS;
