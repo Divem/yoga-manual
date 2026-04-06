@@ -85,7 +85,8 @@ function htmlPage(title, body, poseIds) {
   var poseData = JSON.stringify(Object.fromEntries(
     poseIds.filter(function(id){return !!POSES[id]}).map(function(id){return [id, POSES[id]]})
   ));
-  return '<!DOCTYPE html>\n<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"><meta name="theme-color" content="#3A5248"><title>' + title + ' — 瑜伽中心</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"><style>' + CSS + '</style></head><body>' + body + '</body></html>';
+  var extraCss = '.lesson-nav{display:flex;gap:12px;margin-top:36px;padding-top:24px;border-top:1px solid #E5DED5}.ln-btn{flex:1;text-decoration:none;border-radius:12px;padding:16px;background:#F7F3ED;display:flex;flex-direction:column;gap:4px;transition:background .2s}.ln-btn:active{background:#EDE8E0}.ln-prev{text-align:left}.ln-next{text-align:right;justify-content:flex-end}.ln-dir{font-family:Work Sans,sans-serif;font-size:12px;font-weight:600;color:#C4714B;letter-spacing:.04em}.ln-title{font-family:Work Sans,sans-serif;font-size:13px;font-weight:500;color:#6B6560;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}';
+  return '<!DOCTYPE html>\n<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"><meta name="theme-color" content="#3A5248"><title>' + title + ' — 瑜伽中心</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"><style>' + CSS + extraCss + '</style></head><body>' + body + '</body></html>';
 }
 
 // ── Generate all pages ──
@@ -127,7 +128,24 @@ COURSES.forEach(function(course){
     var safety = lesson.safetyNote ? '<div class="safety-note"><strong>安全提示</strong><br>' + lesson.safetyNote + '</div>' : '';
     var obj = lesson.objectives ? '<ul class="kp-list">' + lesson.objectives.map(function(o){return '<li>' + o + '</li>';}).join('') + '</ul>' : '';
 
-    var lbody = '<nav style="position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;align-items:center;gap:12px;padding:0 20px;background:rgba(247,243,237,.9);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(229,222,213,.5)"><a href="../courses/' + course.id + '.html" style="text-decoration:none;color:#6B6560;font-family:Work Sans,sans-serif;font-size:14px;font-weight:500;display:flex;align-items:center;gap:6px">← ' + course.name + '</a></nav><div style="padding:calc(56px + 16px) 20px calc(32px + env(safe-area-inset-bottom,0px));max-width:680px;margin:0 auto"><div class="page-title">第 ' + lesson.num + ' 课：' + lesson.title + '</div><div class="page-en">' + (lesson.subtitle||'') + '</div>' + (desc?'<div class="ld-section"><p class="ld-desc">' + desc + '</p></div>':'') + (hero?'<div class="ld-hero"><div class="ld-hero-inner">' + hero + '</div></div>':'') + (lesson.poses&&lesson.poses.length?'<div class="ld-section"><div class="ld-label">本节课体式（' + lesson.poses.length + '）</div>' + grid + '</div>':'') + (lesson.objectives&&lesson.objectives.length?'<div class="ld-section"><div class="ld-label">学习目标</div>' + obj + '</div>':'') + (lesson.sequence&&lesson.sequence.length?'<div class="ld-section"><div class="ld-label">课堂序列</div>' + seq + '</div>':'') + (lesson.keyPoints&&lesson.keyPoints.length?'<div class="ld-section"><div class="ld-label">教学要点</div>' + kp + '</div>':'') + safety + '</div>';
+    var prevL = lesson.num > 1 ? lessons[lesson.num - 2] : null;
+    var nextL = lesson.num < lessons.length ? lessons[lesson.num] : null;
+    var navHtml = '<div class="lesson-nav">';
+    if (prevL) {
+      var pn = String(prevL.num).padStart(2,'0');
+      navHtml += '<a class="ln-btn ln-prev" href="../lessons/' + course.id + '-' + pn + '.html"><span class="ln-dir">← 上一课</span><span class="ln-title">第 ' + prevL.num + ' 课：' + prevL.title + '</span></a>';
+    } else {
+      navHtml += '<span></span>';
+    }
+    if (nextL) {
+      var nn = String(nextL.num).padStart(2,'0');
+      navHtml += '<a class="ln-btn ln-next" href="../lessons/' + course.id + '-' + nn + '.html"><span class="ln-dir">下一课 →</span><span class="ln-title">第 ' + nextL.num + ' 课：' + nextL.title + '</span></a>';
+    } else {
+      navHtml += '<a class="ln-btn ln-next" href="../courses/' + course.id + '.html" style="justify-content:flex-end"><span class="ln-dir">返回课程 →</span></a>';
+    }
+    navHtml += '</div>';
+
+    var lbody = '<nav style="position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;align-items:center;gap:12px;padding:0 20px;background:rgba(247,243,237,.9);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(229,222,213,.5)"><a href="../courses/' + course.id + '.html" style="text-decoration:none;color:#6B6560;font-family:Work Sans,sans-serif;font-size:14px;font-weight:500;display:flex;align-items:center;gap:6px">← ' + course.name + '</a></nav><div style="padding:calc(56px + 16px) 20px calc(32px + env(safe-area-inset-bottom,0px));max-width:680px;margin:0 auto"><div class="page-title">第 ' + lesson.num + ' 课：' + lesson.title + '</div><div class="page-en">' + (lesson.subtitle||'') + '</div>' + (desc?'<div class="ld-section"><p class="ld-desc">' + desc + '</p></div>':'') + (hero?'<div class="ld-hero"><div class="ld-hero-inner">' + hero + '</div></div>':'') + (lesson.poses&&lesson.poses.length?'<div class="ld-section"><div class="ld-label">本节课体式（' + lesson.poses.length + '）</div>' + grid + '</div>':'') + (lesson.objectives&&lesson.objectives.length?'<div class="ld-section"><div class="ld-label">学习目标</div>' + obj + '</div>':'') + (lesson.sequence&&lesson.sequence.length?'<div class="ld-section"><div class="ld-label">课堂序列</div>' + seq + '</div>':'') + (lesson.keyPoints&&lesson.keyPoints.length?'<div class="ld-section"><div class="ld-label">教学要点</div>' + kp + '</div>':'') + safety + navHtml + '</div>';
 
     var num = String(lesson.num).padStart(2,'0');
     var lessonFile = path.join(__dirname, 'lessons', course.id + '-' + num + '.html');
