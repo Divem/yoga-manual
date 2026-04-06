@@ -400,3 +400,550 @@ COURSES.forEach(function(course){
 });
 
 console.log('\n  Generated ' + courseCount + ' course pages + ' + lessonCount + ' lesson pages');
+
+// ══════════════════════════════════════════════════════════════
+// ── INSTRUCTOR TEACHING MANUAL ──
+// ══════════════════════════════════════════════════════════════
+
+fs.mkdirSync(path.join(__dirname, 'instructor'), { recursive: true });
+
+var INSTRUCTOR_CSS = `
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#F7F3ED;--bg-deep:#EDE8E0;--bg-card:#FFFFFF;
+  --fg:#2A2A28;--fg2:#6B6560;--fg3:#9E9790;
+  --primary:#3A5248;--primary-h:#2D4038;--primary-l:rgba(58,82,72,.07);
+  --accent:#C4714B;--accent-h:#A85D3B;--accent-l:rgba(196,113,75,.09);
+  --sand:#D4C5B5;--cream:#F7F3ED;
+  --border:#E5DED5;
+  --shadow:0 1px 3px rgba(42,42,40,.05),0 8px 24px rgba(42,42,40,.04);
+  --shadow-lg:0 4px 12px rgba(42,42,40,.06),0 20px 48px rgba(42,42,40,.08);
+  --radius:14px;--radius-lg:22px;
+  --font-d:'Fraunces',Georgia,'Noto Serif SC',serif;
+  --font-b:-apple-system,'PingFang SC','Hiragino Sans GB','Microsoft YaHei','Noto Sans SC',sans-serif;
+  --font-u:'Work Sans',-apple-system,'PingFang SC',sans-serif;
+  --nav-h:56px;--safe-b:env(safe-area-inset-bottom,0px);
+}
+html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--font-b);background:var(--bg);color:var(--fg);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.028;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--sand);border-radius:4px}
+
+/* Dark mode */
+body.dark{--bg:#1a1a1a;--bg-deep:#222;--bg-card:#2a2a28;--fg:#e8e4de;--fg2:#b0a99f;--fg3:#807870;
+  --primary-l:rgba(58,82,72,.15);--accent-l:rgba(196,113,75,.15);--border:#3a3836;
+  --shadow:0 1px 3px rgba(0,0,0,.2),0 8px 24px rgba(0,0,0,.15);
+  --shadow-lg:0 4px 12px rgba(0,0,0,.3),0 20px 48px rgba(0,0,0,.2)}
+body.dark::after{opacity:.015}
+
+/* Nav */
+.i-nav{position:fixed;top:0;left:0;right:0;z-index:100;height:var(--nav-h);
+  display:flex;align-items:center;justify-content:space-between;padding:0 16px;
+  background:rgba(247,243,237,.9);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(229,222,213,.5)}
+body.dark .i-nav{background:rgba(26,26,26,.92);border-bottom-color:rgba(58,54,50,.5)}
+.i-nav a{text-decoration:none;color:var(--fg2);font-family:var(--font-u);font-size:14px;font-weight:500;display:flex;align-items:center;gap:6px}
+.i-nav-logo{font-family:var(--font-u);font-weight:700;font-size:14px;color:var(--primary);letter-spacing:-.02em}
+.i-nav-logo span{font-family:var(--font-d);font-weight:500;font-style:italic;font-size:12px;color:var(--accent);margin-left:4px}
+.dark-toggle{background:none;border:1.5px solid var(--border);border-radius:100px;padding:6px 12px;
+  font-family:var(--font-u);font-size:12px;font-weight:500;color:var(--fg2);cursor:pointer;transition:all .2s}
+.dark-toggle:hover{border-color:var(--accent);color:var(--accent)}
+
+/* Container */
+.i-container{padding:calc(var(--nav-h) + 20px) 16px calc(32px + var(--safe-b));max-width:720px;margin:0 auto}
+
+/* Page header */
+.i-page-tag{font-family:var(--font-u);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.i-page-tag::before{content:'';width:16px;height:1.5px;background:var(--accent)}
+.i-page-title{font-family:var(--font-d);font-size:clamp(24px,6vw,32px);font-weight:500;color:var(--fg);line-height:1.3;margin-bottom:6px}
+.i-page-sub{font-size:14px;color:var(--fg3);line-height:1.6;margin-bottom:6px}
+.i-meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.i-meta-tag{font-family:var(--font-u);font-size:12px;font-weight:500;padding:4px 12px;border-radius:100px;background:var(--primary-l);color:var(--primary)}
+
+/* Section labels */
+.i-section{margin-bottom:32px}
+.i-label{font-family:var(--font-u);font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.i-label::before{content:'';width:14px;height:1.5px;background:var(--accent)}
+
+/* Objectives */
+.i-obj-list{list-style:none}
+.i-obj-list li{padding:6px 0 6px 20px;position:relative;font-size:14px;color:var(--fg2);line-height:1.7}
+.i-obj-list li::before{content:'';position:absolute;left:0;top:13px;width:8px;height:8px;border-radius:50%;border:2px solid var(--primary)}
+
+/* ─── TIMELINE ─── */
+.i-timeline{position:relative;margin-bottom:24px}
+.i-tl-bar{display:flex;border-radius:8px;overflow:hidden;height:40px;background:var(--bg-deep);cursor:pointer}
+.i-tl-seg{display:flex;align-items:center;justify-content:center;gap:4px;padding:0 6px;
+  font-family:var(--font-u);font-size:11px;font-weight:500;color:#fff;
+  transition:opacity .2s;position:relative;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.i-tl-seg:hover{opacity:.85}
+.i-tl-seg.active{box-shadow:inset 0 -3px 0 rgba(255,255,255,.4)}
+.i-tl-seg .tl-name{overflow:hidden;text-overflow:ellipsis}
+.i-tl-seg .tl-dur{opacity:.7;font-size:10px;flex-shrink:0}
+.i-tl-total{text-align:right;font-family:var(--font-u);font-size:11px;color:var(--fg3);margin-top:4px}
+.i-tl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none}
+.i-tl-scroll::-webkit-scrollbar{display:none}
+
+/* Timeline segment colors */
+.i-tl-seg.tl-warmup{background:#7BA68C}
+.i-tl-seg.tl-main{background:var(--primary)}
+.i-tl-seg.tl-peak{background:var(--accent)}
+.i-tl-seg.tl-cool{background:#9FA8DA}
+.i-tl-seg.tl-rest{background:var(--sand)}
+
+/* ─── CUE CARDS ─── */
+.i-cue-wrap{position:relative;margin-bottom:24px}
+.i-cue-progress{display:flex;gap:2px;margin-bottom:12px;cursor:pointer}
+.i-cue-prog-seg{height:4px;border-radius:2px;background:var(--border);transition:background .3s;position:relative}
+.i-cue-prog-seg.done{background:var(--primary)}
+.i-cue-prog-seg.current{background:var(--accent)}
+.i-cue-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:0;
+  scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch;scroll-behavior:smooth}
+.i-cue-track::-webkit-scrollbar{display:none}
+.i-cue-card{flex:0 0 100%;scroll-snap-align:start;
+  background:var(--bg-card);border-radius:var(--radius);padding:24px 20px;box-shadow:var(--shadow);
+  min-height:220px;display:flex;flex-direction:column}
+.i-cue-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
+.i-cue-step{font-family:var(--font-u);font-size:18px;font-weight:600;color:var(--fg)}
+.i-cue-dur{font-family:var(--font-u);font-size:14px;font-weight:600;color:var(--accent);
+  padding:4px 12px;border-radius:100px;background:var(--accent-l);flex-shrink:0}
+.i-cue-note{font-size:15px;color:var(--fg2);line-height:1.8;flex:1;overflow:hidden}
+.i-cue-note.collapsed{display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical}
+.i-cue-expand{background:none;border:none;font-family:var(--font-u);font-size:13px;font-weight:500;
+  color:var(--accent);cursor:pointer;padding:8px 0 0;align-self:flex-start}
+.i-cue-counter{text-align:center;font-family:var(--font-u);font-size:13px;color:var(--fg3);margin-top:12px}
+.i-cue-arrows{position:absolute;top:50%;left:0;right:0;display:flex;justify-content:space-between;
+  pointer-events:none;transform:translateY(-50%);padding:0 4px}
+.i-cue-arr{pointer-events:all;width:36px;height:36px;border-radius:50%;border:1.5px solid var(--border);
+  background:var(--bg-card);display:flex;align-items:center;justify-content:center;cursor:pointer;
+  font-size:16px;color:var(--fg2);box-shadow:var(--shadow);transition:all .2s}
+.i-cue-arr:hover{border-color:var(--accent);color:var(--accent)}
+.i-cue-arr:disabled{opacity:.3;pointer-events:none}
+
+/* ─── POSE REFERENCE ─── */
+.i-pose-nav{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.i-pose-nav-btn{font-family:var(--font-u);font-size:12px;font-weight:500;padding:4px 12px;
+  border-radius:100px;border:1.5px solid var(--border);background:transparent;color:var(--fg2);
+  cursor:pointer;transition:all .2s;white-space:nowrap}
+.i-pose-nav-btn:hover,.i-pose-nav-btn.active{border-color:var(--primary);background:var(--primary);color:#fff}
+.i-pose-cards{display:grid;gap:12px}
+.i-pose-card{background:var(--bg-card);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);
+  display:flex;gap:16px;align-items:flex-start}
+.i-pose-svg{flex-shrink:0}
+.i-pose-info{flex:1;min-width:0}
+.i-pose-name{font-family:var(--font-u);font-size:15px;font-weight:600;color:var(--fg)}
+.i-pose-en{font-family:var(--font-d);font-size:13px;font-style:italic;color:var(--fg3);margin-top:1px}
+.i-pose-sanskrit{font-size:12px;color:var(--fg3);margin-top:1px}
+.i-pose-cat{display:inline-block;font-family:var(--font-u);font-size:11px;font-weight:500;
+  padding:2px 8px;border-radius:100px;background:var(--primary-l);color:var(--primary);margin-top:6px}
+
+/* Key points & safety */
+.i-kp-list{list-style:none}
+.i-kp-list li{padding:8px 0 8px 20px;position:relative;font-size:14px;color:var(--fg2);line-height:1.7}
+.i-kp-list li::before{content:'';position:absolute;left:0;top:14px;width:8px;height:8px;border-radius:2px;background:var(--primary);transform:rotate(45deg)}
+.i-safety{background:rgba(196,113,75,.06);border-left:3px solid var(--accent);border-radius:0 var(--radius) var(--radius) 0;
+  padding:16px 18px;font-size:14px;color:var(--fg2);line-height:1.7}
+.i-safety strong{color:var(--accent);font-family:var(--font-u);font-size:12px;font-weight:600;
+  letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:6px}
+
+/* ─── FLOATING NAV ─── */
+.i-float-nav{position:fixed;bottom:calc(20px + var(--safe-b));left:50%;transform:translateX(-50%);z-index:90;
+  display:flex;gap:2px;background:var(--bg-card);border-radius:100px;padding:4px;box-shadow:var(--shadow-lg);
+  border:1px solid var(--border)}
+.i-float-btn{font-family:var(--font-u);font-size:11px;font-weight:600;padding:8px 14px;border-radius:100px;
+  border:none;background:transparent;color:var(--fg3);cursor:pointer;transition:all .2s;white-space:nowrap}
+.i-float-btn.active{background:var(--primary);color:#fff}
+.i-float-btn:hover:not(.active){color:var(--fg)}
+
+/* ─── LESSON NAV ─── */
+.i-lesson-nav{display:flex;gap:12px;margin-top:36px;padding-top:24px;border-top:1px solid var(--border)}
+.i-ln-btn{flex:1;text-decoration:none;border-radius:var(--radius);padding:16px;background:var(--bg-deep);
+  display:flex;flex-direction:column;gap:4px;transition:background .2s}
+.i-ln-btn:hover{background:var(--border)}
+.i-ln-prev{text-align:left}.i-ln-next{text-align:right}
+.i-ln-dir{font-family:var(--font-u);font-size:12px;font-weight:600;color:var(--accent);letter-spacing:.04em}
+.i-ln-title{font-family:var(--font-u);font-size:13px;font-weight:500;color:var(--fg2);line-height:1.4}
+
+/* ─── INDEX PAGE ─── */
+.i-hero{padding:calc(var(--nav-h) + 32px) 16px 32px;text-align:center}
+.i-hero h1{font-family:var(--font-d);font-size:clamp(28px,7vw,40px);font-weight:300;color:var(--fg);line-height:1.3;margin-bottom:8px}
+.i-hero h1 em{font-style:italic;font-weight:500;color:var(--accent)}
+.i-hero p{font-size:15px;color:var(--fg2);max-width:400px;margin:0 auto}
+.i-filter{position:sticky;top:var(--nav-h);z-index:50;background:rgba(247,243,237,.9);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(229,222,213,.5);padding:10px 16px;display:flex;gap:4px;overflow-x:auto;
+  scrollbar-width:none;-ms-overflow-style:none}
+body.dark .i-filter{background:rgba(26,26,26,.92);border-bottom-color:rgba(58,54,50,.5)}
+.i-filter::-webkit-scrollbar{display:none}
+.i-filter-btn{flex-shrink:0;font-family:var(--font-u);font-size:13px;font-weight:500;padding:8px 18px;
+  border-radius:100px;border:1.5px solid var(--border);background:transparent;color:var(--fg2);
+  cursor:pointer;transition:all .25s;white-space:nowrap}
+.i-filter-btn.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.i-course-group{padding:20px 16px;max-width:720px;margin:0 auto}
+.i-course-group[data-cat]{display:block}
+.i-course-group.hidden{display:none}
+.i-group-title{font-family:var(--font-u);font-size:16px;font-weight:600;color:var(--fg);margin-bottom:4px;
+  display:flex;align-items:center;gap:8px}
+.i-group-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.i-group-en{font-family:var(--font-d);font-size:13px;font-style:italic;color:var(--fg3);margin-bottom:12px}
+.i-lesson-grid{display:grid;gap:8px}
+.i-lesson-item{background:var(--bg-card);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);
+  display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit;transition:all .2s}
+.i-lesson-item:hover{box-shadow:var(--shadow-lg);transform:translateY(-1px)}
+.i-lesson-num{font-family:var(--font-d);font-size:20px;font-weight:700;color:var(--primary);opacity:.3;
+  width:32px;text-align:center;flex-shrink:0}
+.i-lesson-info{flex:1;min-width:0}
+.i-lesson-info h4{font-family:var(--font-u);font-size:14px;font-weight:600;color:var(--fg);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.i-lesson-info p{font-size:12px;color:var(--fg3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.i-lesson-dur{font-family:var(--font-u);font-size:12px;font-weight:500;color:var(--fg3);flex-shrink:0}
+.i-lesson-arr{color:var(--sand);font-size:18px;flex-shrink:0}
+
+/* Footer */
+.i-footer{padding:40px 16px calc(32px + var(--safe-b));text-align:center;border-top:1px solid var(--border)}
+.i-footer p{font-size:13px;color:var(--fg3);line-height:1.8}
+.i-footer .brand{font-family:var(--font-d);font-style:italic;color:var(--accent);font-size:14px}
+
+/* ─── RESPONSIVE ─── */
+@media(min-width:768px){
+  .i-cue-card{min-height:180px}
+  .i-pose-cards{grid-template-columns:1fr 1fr}
+}
+@media(min-width:900px){
+  .i-tl-and-cue{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+  .i-tl-and-cue .i-timeline{position:sticky;top:calc(var(--nav-h) + 16px)}
+}
+`;
+
+var INSTRUCTOR_JS = `
+// Dark mode
+(function(){
+  var dm = localStorage.getItem('instructor-dark');
+  if(dm==='true') document.body.classList.add('dark');
+})();
+function toggleDark(){
+  document.body.classList.toggle('dark');
+  localStorage.setItem('instructor-dark', document.body.classList.contains('dark'));
+}
+
+// Cue card logic
+function initCueCards(){
+  var track = document.querySelector('.i-cue-track');
+  if(!track) return;
+  var cards = track.querySelectorAll('.i-cue-card');
+  var progSegs = document.querySelectorAll('.i-cue-prog-seg');
+  var counter = document.querySelector('.i-cue-counter');
+  var prevBtn = document.querySelector('.i-cue-prev');
+  var nextBtn = document.querySelector('.i-cue-next');
+  var tlSegs = document.querySelectorAll('.i-tl-seg');
+  var current = 0;
+
+  function update(){
+    progSegs.forEach(function(s,i){
+      s.classList.remove('done','current');
+      if(i < current) s.classList.add('done');
+      if(i === current) s.classList.add('current');
+    });
+    if(counter) counter.textContent = (current+1) + ' / ' + cards.length;
+    if(prevBtn) prevBtn.disabled = current === 0;
+    if(nextBtn) nextBtn.disabled = current === cards.length - 1;
+    tlSegs.forEach(function(s,i){
+      s.classList.toggle('active', i === current);
+    });
+  }
+
+  function goTo(idx){
+    if(idx < 0 || idx >= cards.length) return;
+    current = idx;
+    cards[idx].scrollIntoView({behavior:'smooth',block:'nearest',inline:'start'});
+    update();
+  }
+
+  // scroll-snap observer
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting && e.intersectionRatio > 0.5){
+        current = Array.from(cards).indexOf(e.target);
+        update();
+      }
+    });
+  }, {root:track, threshold:0.5});
+  cards.forEach(function(c){obs.observe(c)});
+
+  if(prevBtn) prevBtn.onclick = function(){goTo(current-1)};
+  if(nextBtn) nextBtn.onclick = function(){goTo(current+1)};
+
+  // Progress bar click
+  progSegs.forEach(function(s,i){
+    s.onclick = function(){goTo(i)};
+  });
+
+  // Timeline click
+  tlSegs.forEach(function(s,i){
+    s.onclick = function(){goTo(i)};
+  });
+
+  // Expand/collapse
+  document.querySelectorAll('.i-cue-expand').forEach(function(btn){
+    btn.onclick = function(){
+      var note = btn.previousElementSibling;
+      if(note.classList.contains('collapsed')){
+        note.classList.remove('collapsed');
+        btn.textContent = '收起';
+      } else {
+        note.classList.add('collapsed');
+        btn.textContent = '展开全部';
+      }
+    };
+  });
+
+  update();
+  window._cueGoTo = goTo;
+}
+
+// Floating nav highlight
+function initFloatNav(){
+  var btns = document.querySelectorAll('.i-float-btn');
+  if(!btns.length) return;
+  var sections = [];
+  btns.forEach(function(btn){
+    var target = document.querySelector(btn.getAttribute('data-target'));
+    if(target) sections.push({btn:btn, el:target});
+  });
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      sections.forEach(function(s){
+        if(s.el === e.target && e.isIntersecting){
+          btns.forEach(function(b){b.classList.remove('active')});
+          s.btn.classList.add('active');
+        }
+      });
+    });
+  },{threshold:0.2});
+  sections.forEach(function(s){obs.observe(s.el)});
+
+  btns.forEach(function(btn){
+    btn.onclick = function(){
+      var t = document.querySelector(btn.getAttribute('data-target'));
+      if(t) t.scrollIntoView({behavior:'smooth',block:'start'});
+    };
+  });
+}
+
+// Pose nav
+function initPoseNav(){
+  document.querySelectorAll('.i-pose-nav-btn').forEach(function(btn){
+    btn.onclick = function(){
+      var target = document.getElementById(btn.getAttribute('data-pose'));
+      if(target) target.scrollIntoView({behavior:'smooth',block:'center'});
+      document.querySelectorAll('.i-pose-nav-btn').forEach(function(b){b.classList.remove('active')});
+      btn.classList.add('active');
+    };
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  initCueCards();
+  initFloatNav();
+  initPoseNav();
+});
+`;
+
+// Timeline segment color classification
+function tlClass(stepName) {
+  var s = stepName.toLowerCase();
+  if (/热身|唤醒|激活|开场|调息|静心|围坐|理论/.test(s)) return 'tl-warmup';
+  if (/放松|savasana|挺尸|冷却|恢复|收束|回收/.test(s)) return 'tl-cool';
+  if (/休息|反弹/.test(s)) return 'tl-rest';
+  if (/高峰|核心|主题|深入|渐进|强化/.test(s)) return 'tl-peak';
+  return 'tl-main';
+}
+
+// Parse duration string to minutes
+function parseDur(d) {
+  if (!d) return 0;
+  var m = d.match(/(\d+)/);
+  return m ? parseInt(m[1]) : 0;
+}
+
+// Pose category labels
+var POSE_CAT_LABELS = {
+  standing:'站立',seated:'坐姿',kneeling:'跪姿',prone:'俯卧',supine:'仰卧',
+  inversion:'倒置',arm_balance:'手臂支撑',backbend:'后弯',balance:'平衡',core:'核心'
+};
+
+function instructorPage(title, body) {
+  return '<!DOCTYPE html>\n<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"><meta name="theme-color" content="#3A5248"><title>' + title + ' — O-YOGA教练手册</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"><style>' + INSTRUCTOR_CSS + '</style></head><body>' + body + '<script>' + INSTRUCTOR_JS + '<\/script></body></html>';
+}
+
+// ── Generate instructor index page ──
+function generateInstructorIndex() {
+  var groups = {};
+  COURSES.forEach(function(course) {
+    var lessons = getAllLessons(course.id);
+    if (!lessons) return;
+    if (!groups[course.cat]) groups[course.cat] = [];
+    groups[course.cat].push({ course: course, lessons: lessons });
+  });
+
+  var catOrder = ['foundation', 'progressive', 'workshop'];
+  var catColors = { foundation: '#3A5248', progressive: '#C4714B', workshop: '#8B6F4E' };
+
+  var filterHtml = '<div class="i-filter"><button class="i-filter-btn active" onclick="filterCat(\'all\')">全部</button><button class="i-filter-btn" onclick="filterCat(\'foundation\')">基础课程</button><button class="i-filter-btn" onclick="filterCat(\'progressive\')">进阶课程</button><button class="i-filter-btn" onclick="filterCat(\'workshop\')">专题工作坊</button></div>';
+
+  var groupsHtml = '';
+  catOrder.forEach(function(cat) {
+    if (!groups[cat]) return;
+    groups[cat].forEach(function(g) {
+      var c = g.course, lessons = g.lessons;
+      var items = lessons.map(function(l) {
+        var num = String(l.num).padStart(2, '0');
+        return '<a class="i-lesson-item" href="' + c.id + '-' + num + '.html"><span class="i-lesson-num">' + num + '</span><div class="i-lesson-info"><h4>' + l.title + '</h4><p>' + (l.subtitle || '') + '</p></div><span class="i-lesson-dur">' + c.duration + 'min</span><span class="i-lesson-arr">›</span></a>';
+      }).join('');
+      groupsHtml += '<div class="i-course-group" data-cat="' + cat + '"><div class="i-group-title"><span class="i-group-dot" style="background:' + catColors[cat] + '"></span>' + c.name + ' <span style="font-weight:400;color:var(--fg3);font-size:13px">(' + lessons.length + '课时)</span></div><div class="i-group-en">' + c.nameEn + '</div><div class="i-lesson-grid">' + items + '</div></div>';
+    });
+  });
+
+  var filterJs = '<script>function filterCat(cat){document.querySelectorAll(".i-filter-btn").forEach(function(b){b.classList.remove("active")});event.target.classList.add("active");document.querySelectorAll(".i-course-group").forEach(function(g){if(cat==="all"||g.dataset.cat===cat){g.classList.remove("hidden")}else{g.classList.add("hidden")}})}<\/script>';
+
+  var body = '<nav class="i-nav"><a href="../index.html" class="i-nav-logo">O-YOGA<span>教练手册</span></a><button class="dark-toggle" onclick="toggleDark()">深色模式</button></nav><div class="i-hero"><h1>教练<em>教学手册</em></h1><p>备课参考 · 口令速查 · 体式图解 · 课堂节奏</p></div>' + filterHtml + groupsHtml + '<footer class="i-footer"><p><span class="brand">O-YOGA瑜伽原</span> · 教练手册</p></footer>' + filterJs;
+
+  fs.writeFileSync(path.join(__dirname, 'instructor', 'index.html'), instructorPage('教练教学手册', body), 'utf8');
+  console.log('  instructor/index.html');
+}
+
+// ── Generate instructor lesson pages ──
+function generateInstructorLessonPages() {
+  var instructorLessonCount = 0;
+
+  COURSES.forEach(function(course) {
+    var lessons = getAllLessons(course.id);
+    if (!lessons) return;
+    var color = ac(course.cat);
+
+    lessons.forEach(function(lesson, idx) {
+      var num = String(lesson.num).padStart(2, '0');
+
+      // ── Nav bar ──
+      var navHtml = '<nav class="i-nav"><a href="index.html">← 教练手册</a><button class="dark-toggle" onclick="toggleDark()">深色模式</button></nav>';
+
+      // ── Page header ──
+      var headerHtml = '<div class="i-page-tag">教练手册</div><div class="i-page-title">第 ' + lesson.num + ' 课：' + lesson.title + '</div><div class="i-page-sub">' + course.name + ' · ' + (lesson.subtitle || '') + '</div><div class="i-meta"><span class="i-meta-tag">' + course.duration + ' 分钟</span><span class="i-meta-tag">' + CAT_LABELS[course.cat] + '</span><span class="i-meta-tag">Level ' + (Array.isArray(course.level) ? course.level[0] : course.level) + '</span></div>';
+
+      // ── Objectives ──
+      var objHtml = '';
+      if (lesson.objectives && lesson.objectives.length) {
+        objHtml = '<div class="i-section" id="sec-obj"><div class="i-label">学习目标</div><ul class="i-obj-list">' + lesson.objectives.map(function(o) { return '<li>' + o + '</li>'; }).join('') + '</ul></div>';
+      }
+
+      // ── Timeline ──
+      var timelineHtml = '';
+      if (lesson.sequence && lesson.sequence.length) {
+        var totalMin = lesson.sequence.reduce(function(sum, s) { return sum + parseDur(s.duration); }, 0);
+        var segs = lesson.sequence.map(function(s, i) {
+          var min = parseDur(s.duration);
+          var pct = totalMin > 0 ? (min / totalMin * 100) : (100 / lesson.sequence.length);
+          return '<div class="i-tl-seg ' + tlClass(s.step) + '" style="width:' + pct + '%" data-idx="' + i + '"><span class="tl-name">' + s.step + '</span><span class="tl-dur">' + s.duration + '</span></div>';
+        }).join('');
+        timelineHtml = '<div class="i-section" id="sec-timeline"><div class="i-label">课堂时间线</div><div class="i-timeline"><div class="i-tl-scroll"><div class="i-tl-bar" style="min-width:' + Math.max(lesson.sequence.length * 80, 320) + 'px">' + segs + '</div></div><div class="i-tl-total">总时长 ' + totalMin + ' 分钟</div></div></div>';
+      }
+
+      // ── Cue cards ──
+      var cueHtml = '';
+      if (lesson.sequence && lesson.sequence.length) {
+        var progSegs = lesson.sequence.map(function(s, i) {
+          var min = parseDur(s.duration);
+          var totalMin2 = lesson.sequence.reduce(function(sum, s2) { return sum + parseDur(s2.duration); }, 0);
+          var pct = totalMin2 > 0 ? (min / totalMin2 * 100) : (100 / lesson.sequence.length);
+          return '<div class="i-cue-prog-seg" style="flex:' + pct + '" data-idx="' + i + '"></div>';
+        }).join('');
+
+        var cards = lesson.sequence.map(function(s, i) {
+          var noteText = (s.note || '').replace(/</g, '&lt;');
+          var needsExpand = noteText.length > 200;
+          return '<div class="i-cue-card"><div class="i-cue-header"><div class="i-cue-step">' + s.step + '</div><div class="i-cue-dur">' + s.duration + '</div></div><div class="i-cue-note' + (needsExpand ? ' collapsed' : '') + '">' + noteText + '</div>' + (needsExpand ? '<button class="i-cue-expand">展开全部</button>' : '') + '</div>';
+        }).join('');
+
+        cueHtml = '<div class="i-section" id="sec-cue"><div class="i-label">教学口令卡</div><div class="i-cue-wrap"><div class="i-cue-progress">' + progSegs + '</div><div class="i-cue-track">' + cards + '</div><div class="i-cue-arrows"><button class="i-cue-arr i-cue-prev" aria-label="上一步">‹</button><button class="i-cue-arr i-cue-next" aria-label="下一步">›</button></div><div class="i-cue-counter"></div></div></div>';
+      }
+
+      // ── Pose reference cards ──
+      var poseHtml = '';
+      if (lesson.poses && lesson.poses.length) {
+        var poseNavBtns = lesson.poses.map(function(pid) {
+          var pose = POSES[pid];
+          if (!pose) return '';
+          return '<button class="i-pose-nav-btn" data-pose="pose-' + pid + '">' + pose.name + '</button>';
+        }).filter(Boolean).join('');
+
+        var poseCards = lesson.poses.map(function(pid) {
+          var pose = POSES[pid];
+          if (!pose) return '';
+          var svg = poseSvg(pid, { width: 80, showLabel: false, color: color });
+          var catLabel = POSE_CAT_LABELS[pose.cat] || pose.cat || '';
+          return '<div class="i-pose-card" id="pose-' + pid + '">' + '<div class="i-pose-svg">' + svg + '</div>' + '<div class="i-pose-info"><div class="i-pose-name">' + pose.name + '</div><div class="i-pose-en">' + pose.nameEn + '</div>' + (pose.sanskrit ? '<div class="i-pose-sanskrit">' + pose.sanskrit + '</div>' : '') + (catLabel ? '<span class="i-pose-cat">' + catLabel + '</span>' : '') + '</div></div>';
+        }).filter(Boolean).join('');
+
+        poseHtml = '<div class="i-section" id="sec-pose"><div class="i-label">体式速查 (' + lesson.poses.length + ')</div><div class="i-pose-nav">' + poseNavBtns + '</div><div class="i-pose-cards">' + poseCards + '</div></div>';
+      }
+
+      // ── Key points ──
+      var kpHtml = '';
+      if (lesson.keyPoints && lesson.keyPoints.length) {
+        kpHtml = '<div class="i-section" id="sec-kp"><div class="i-label">教学要点</div><ul class="i-kp-list">' + lesson.keyPoints.map(function(p) { return '<li>' + p + '</li>'; }).join('') + '</ul></div>';
+      }
+
+      // ── Safety ──
+      var safetyHtml = '';
+      if (lesson.safetyNote) {
+        safetyHtml = '<div class="i-section" id="sec-safety"><div class="i-label">安全提示</div><div class="i-safety"><strong>注意事项</strong>' + lesson.safetyNote + '</div></div>';
+      }
+
+      // ── Floating nav ──
+      var floatSections = [];
+      if (timelineHtml) floatSections.push({ id: 'sec-timeline', label: '时间线' });
+      if (cueHtml) floatSections.push({ id: 'sec-cue', label: '口令' });
+      if (poseHtml) floatSections.push({ id: 'sec-pose', label: '体式' });
+      if (kpHtml) floatSections.push({ id: 'sec-kp', label: '要点' });
+      if (safetyHtml) floatSections.push({ id: 'sec-safety', label: '安全' });
+      var floatHtml = '';
+      if (floatSections.length > 1) {
+        floatHtml = '<div class="i-float-nav">' + floatSections.map(function(s) {
+          return '<button class="i-float-btn" data-target="#' + s.id + '">' + s.label + '</button>';
+        }).join('') + '</div>';
+      }
+
+      // ── Lesson navigation (prev/next) ──
+      var prevL = lesson.num > 1 ? lessons[lesson.num - 2] : null;
+      var nextL = lesson.num < lessons.length ? lessons[lesson.num] : null;
+      var lessonNavHtml = '<div class="i-lesson-nav">';
+      if (prevL) {
+        var pn = String(prevL.num).padStart(2, '0');
+        lessonNavHtml += '<a class="i-ln-btn i-ln-prev" href="' + course.id + '-' + pn + '.html"><span class="i-ln-dir">← 上一课</span><span class="i-ln-title">第 ' + prevL.num + ' 课：' + prevL.title + '</span></a>';
+      } else {
+        lessonNavHtml += '<span></span>';
+      }
+      if (nextL) {
+        var nn = String(nextL.num).padStart(2, '0');
+        lessonNavHtml += '<a class="i-ln-btn i-ln-next" href="' + course.id + '-' + nn + '.html"><span class="i-ln-dir">下一课 →</span><span class="i-ln-title">第 ' + nextL.num + ' 课：' + nextL.title + '</span></a>';
+      } else {
+        lessonNavHtml += '<a class="i-ln-btn i-ln-next" href="index.html"><span class="i-ln-dir">返回手册 →</span></a>';
+      }
+      lessonNavHtml += '</div>';
+
+      // ── Assemble page ──
+      var body = navHtml + '<div class="i-container">' + headerHtml + objHtml + timelineHtml + cueHtml + poseHtml + kpHtml + safetyHtml + lessonNavHtml + '</div>' + floatHtml;
+
+      var file = path.join(__dirname, 'instructor', course.id + '-' + num + '.html');
+      fs.writeFileSync(file, instructorPage('第' + lesson.num + '课 ' + lesson.title + ' — ' + course.name, body), 'utf8');
+      instructorLessonCount++;
+    });
+  });
+
+  return instructorLessonCount;
+}
+
+generateInstructorIndex();
+var iLessons = generateInstructorLessonPages();
+console.log('  Generated instructor/index.html + ' + iLessons + ' instructor lesson pages');
