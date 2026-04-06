@@ -492,7 +492,70 @@ body.dark .i-nav{background:rgba(26,26,26,.92);border-bottom-color:rgba(58,54,50
 .i-tl-seg.tl-cool{background:#9FA8DA}
 .i-tl-seg.tl-rest{background:var(--sand)}
 
-/* ─── CUE CARDS ─── */
+/* ─── TABS ─── */
+.i-tabs{display:flex;gap:0;border-bottom:1.5px solid var(--border);margin:20px 0 24px}
+.i-tab{flex:1;padding:12px 0;font-family:var(--font-u);font-size:14px;font-weight:600;
+  color:var(--fg3);background:none;border:none;cursor:pointer;position:relative;transition:color .25s;
+  display:flex;align-items:center;justify-content:center;gap:6px}
+.i-tab::after{content:"";position:absolute;bottom:-1.5px;left:20%;right:20%;height:2.5px;
+  border-radius:2px;background:transparent;transition:all .25s}
+.i-tab.i-tab-active{color:var(--primary)}
+.i-tab.i-tab-active::after{background:var(--primary);left:10%;right:10%}
+.i-tab-badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:100px;background:var(--accent);color:#fff}
+.i-tab-icon{font-size:16px}
+.i-tab-content{display:none}.i-tab-content.i-tab-active{display:block}
+
+/* ─── FULLSCREEN CUE MODE ─── */
+body.fs-mode{overflow:hidden}
+body.fs-mode .i-nav,
+body.fs-mode .i-container,
+body.fs-mode .i-float-nav{display:none!important}
+body.fs-mode .i-fs-cue{display:flex!important}
+.i-fs-cue{display:none;flex-direction:column;height:100dvh;height:100vh;
+  background:var(--bg);color:var(--fg);overflow:hidden}
+body.dark .i-fs-cue{background:#111}
+.i-fs-header{flex-shrink:0;padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
+.i-fs-title{font-family:var(--font-u);font-size:14px;font-weight:600;color:var(--fg);flex:1;text-align:center;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.i-fs-close{background:none;border:none;font-family:var(--font-u);font-size:13px;font-weight:500;
+  color:var(--fg3);cursor:pointer;padding:6px 12px;border-radius:100px;border:1.5px solid var(--border);transition:all .2s}
+.i-fs-close:hover{border-color:var(--accent);color:var(--accent)}
+.i-fs-progress{flex-shrink:0;padding:0 16px 8px}
+.i-fs-tl{flex-shrink:0;padding:0 16px 12px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch}
+.i-fs-tl::-webkit-scrollbar{display:none}
+.i-fs-tl-bar{display:flex;border-radius:8px;overflow:hidden;height:32px;background:var(--bg-deep);gap:1px}
+.i-fs-tl-seg{display:flex;align-items:center;justify-content:center;gap:3px;padding:0 6px;
+  font-family:var(--font-u);font-size:11px;font-weight:500;color:#fff;flex-shrink:0;transition:opacity .2s}
+body.dark .i-fs-tl-seg{opacity:.85}
+.i-fs-tl-seg.active{box-shadow:inset 0 -3px 0 rgba(255,255,255,.5)}
+.i-fs-card-area{flex:1;overflow:hidden;position:relative}
+.i-fs-card-track{display:flex;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;
+  scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch;scroll-behavior:smooth}
+.i-fs-card-track::-webkit-scrollbar{display:none}
+.i-fs-card{flex:0 0 100%;scroll-snap-align:start;display:flex;flex-direction:column;
+  justify-content:center;padding:24px 24px 32px;max-width:640px;margin:0 auto;width:100%;height:100%}
+.i-fs-card-step{font-family:var(--font-u);font-size:clamp(24px,6vw,36px);font-weight:700;color:var(--fg);
+  margin-bottom:8px;line-height:1.2}
+.i-fs-card-dur{font-family:var(--font-u);font-size:16px;font-weight:600;color:var(--accent);
+  margin-bottom:24px}
+.i-fs-card-note{font-size:clamp(18px,4vw,24px);color:var(--fg2);line-height:1.9}
+body.dark .i-fs-card-step{color:#e8e4de}
+body.dark .i-fs-card-note{color:#b0a99f}
+.i-fs-arrows{position:absolute;top:50%;left:0;right:0;display:flex;justify-content:space-between;
+  pointer-events:none;transform:translateY(-50%);padding:0 8px}
+.i-fs-arr{pointer-events:all;width:44px;height:44px;border-radius:50%;border:1.5px solid var(--border);
+  background:var(--bg-card);display:flex;align-items:center;justify-content:center;cursor:pointer;
+  font-size:20px;color:var(--fg2);box-shadow:var(--shadow);transition:all .2s}
+body.dark .i-fs-arr{background:var(--bg-card);border-color:var(--border)}
+.i-fs-arr:hover{border-color:var(--accent);color:var(--accent)}
+.i-fs-arr:disabled{opacity:.3;pointer-events:none}
+.i-fs-footer{flex-shrink:0;padding:12px 16px;display:flex;align-items:center;justify-content:center;gap:16px}
+.i-fs-counter{font-family:var(--font-u);font-size:14px;font-weight:500;color:var(--fg3)}
+.i-fs-dm{background:none;border:1.5px solid var(--border);border-radius:100px;padding:6px 12px;
+  font-family:var(--font-u);font-size:12px;font-weight:500;color:var(--fg3);cursor:pointer;transition:all .2s}
+.i-fs-dm:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ─── CUE CARDS (inline, non-fullscreen) ─── */
 .i-cue-wrap{position:relative;margin-bottom:24px}
 .i-cue-progress{display:flex;gap:2px;margin-bottom:12px;cursor:pointer}
 .i-cue-prog-seg{height:4px;border-radius:2px;background:var(--border);transition:background .3s;position:relative}
@@ -747,7 +810,105 @@ document.addEventListener('DOMContentLoaded', function(){
   initCueCards();
   initFloatNav();
   initPoseNav();
+  initTabs();
+  initFsCue();
 });
+
+// Tab switching
+function initTabs(){
+  document.querySelectorAll('.i-tab').forEach(function(btn){
+    btn.onclick = function(){
+      var target = btn.getAttribute('data-tab');
+      document.querySelectorAll('.i-tab').forEach(function(b){b.classList.remove('i-tab-active')});
+      document.querySelectorAll('.i-tab-content').forEach(function(c){c.classList.remove('i-tab-active')});
+      btn.classList.add('i-tab-active');
+      var el = document.getElementById(target);
+      if(el) el.classList.add('i-tab-active');
+    };
+  });
+}
+
+// Fullscreen cue mode
+function initFsCue(){
+  var fsOverlay = document.getElementById('fsCue');
+  if(!fsOverlay) return;
+  var fsCards = fsOverlay.querySelectorAll('.i-fs-card');
+  var fsSegs = fsOverlay.querySelectorAll('.i-fs-tl-seg');
+  var fsPrev = fsOverlay.querySelector('.i-fs-prev');
+  var fsNext = fsOverlay.querySelector('.i-fs-next');
+  var fsCounter = fsOverlay.querySelector('.i-fs-counter');
+  var fsClose = fsOverlay.querySelector('.i-fs-close');
+  var fsProgress = fsOverlay.querySelector('.i-fs-progress-bar');
+  var current = 0;
+
+  function update(){
+    fsSegs.forEach(function(s,i){
+      s.classList.toggle('active', i===current);
+    });
+    if(fsCounter) fsCounter.textContent = (current+1) + ' / ' + fsCards.length;
+    if(fsPrev) fsPrev.disabled = current===0;
+    if(fsNext) fsNext.disabled = current===fsCards.length-1;
+    // Update progress bar
+    if(fsProgress){
+      var pct = fsCards.length>0 ? ((current+1)/fsCards.length*100) : 0;
+      fsProgress.style.width = pct+'%';
+    }
+  }
+
+  function goTo(idx){
+    if(idx<0||idx>=fsCards.length) return;
+    current = idx;
+    fsCards[idx].scrollIntoView({behavior:'smooth',block:'nearest',inline:'start'});
+    // Auto-scroll timeline
+    var seg = fsSegs[idx];
+    if(seg) seg.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+    update();
+  }
+
+  // scroll-snap observer
+  var track = fsOverlay.querySelector('.i-fs-card-track');
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting && e.intersectionRatio>0.5){
+        current = Array.from(fsCards).indexOf(e.target);
+        update();
+      }
+    });
+  },{root:track, threshold:0.5});
+  fsCards.forEach(function(c){obs.observe(c)});
+
+  if(fsPrev) fsPrev.onclick = function(){goTo(current-1)};
+  if(fsNext) fsNext.onclick = function(){goTo(current+1)};
+  fsSegs.forEach(function(s,i){s.onclick = function(){goTo(i)}});
+  if(fsClose) fsClose.onclick = function(){
+    document.body.classList.remove('fs-mode');
+    document.body.requestFullscreen && document.fullscreenElement && document.exitFullscreen().catch(function(){});
+  };
+
+  // Open fullscreen cue
+  window._openFsCue = function(){
+    document.body.classList.add('fs-mode');
+    // Try native fullscreen
+    if(document.documentElement.requestFullscreen){
+      document.documentElement.requestFullscreen().catch(function(){});
+    }
+    update();
+    goTo(0);
+  };
+
+  // Keyboard nav in fullscreen
+  document.addEventListener('keydown', function(e){
+    if(!document.body.classList.contains('fs-mode')) return;
+    if(e.key==='ArrowLeft'||e.key==='ArrowUp') goTo(current-1);
+    else if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' ') goTo(current+1);
+    else if(e.key==='Escape'){
+      document.body.classList.remove('fs-mode');
+      if(document.fullscreenElement) document.exitFullscreen().catch(function(){});
+    }
+  });
+
+  update();
+}
 `;
 
 // Timeline segment color classification
@@ -903,7 +1064,6 @@ function generateInstructorLessonPages() {
       // ── Floating nav ──
       var floatSections = [];
       if (timelineHtml) floatSections.push({ id: 'sec-timeline', label: '时间线' });
-      if (cueHtml) floatSections.push({ id: 'sec-cue', label: '口令' });
       if (poseHtml) floatSections.push({ id: 'sec-pose', label: '体式' });
       if (kpHtml) floatSections.push({ id: 'sec-kp', label: '要点' });
       if (safetyHtml) floatSections.push({ id: 'sec-safety', label: '安全' });
@@ -932,8 +1092,63 @@ function generateInstructorLessonPages() {
       }
       lessonNavHtml += '</div>';
 
+      // ── Tab: 备课（overview) ──
+      var overviewContent = objHtml + timelineHtml + poseHtml + kpHtml + safetyHtml + lessonNavHtml;
+
+      // ── Tab: 口令演示 ──
+      var cueTabContent = '';
+      if (lesson.sequence && lesson.sequence.length) {
+        // Full-screen cue card overlay
+        var totalMin = lesson.sequence.reduce(function(sum, s) { return sum + parseDur(s.duration); }, 0);
+        var fsSegs = lesson.sequence.map(function(s, i) {
+          var min = parseDur(s.duration);
+          var pct = totalMin > 0 ? (min / totalMin * 100) : (100 / lesson.sequence.length);
+          return '<div class="i-fs-tl-seg ' + tlClass(s.step) + '" style="width:' + pct + '%" data-idx="' + i + '"><span class="tl-name">' + s.step + '</span><span class="tl-dur">' + s.duration + '</span></div>';
+        }).join('');
+
+        var fsCards = lesson.sequence.map(function(s) {
+          var noteText = (s.note || '').replace(/</g, '&lt;');
+          return '<div class="i-fs-card"><div class="i-fs-card-step">' + s.step + '</div><div class="i-fs-card-dur">' + s.duration + '</div><div class="i-fs-card-note">' + noteText + '</div></div>';
+        }).join('');
+
+        var fsOverlay = '<div class="i-fs-cue" id="fsCue">'
+          + '<div class="i-fs-header"><button class="i-fs-close">✕ 退出全屏</button><div class="i-fs-title">第 ' + lesson.num + ' 课：' + lesson.title + '</div><div style="width:72px"></div></div>'
+          + '<div class="i-fs-progress"><div style="height:3px;border-radius:2px;background:var(--bg-deep);overflow:hidden"><div class="i-fs-progress-bar" style="height:100%;background:var(--accent);border-radius:2px;transition:width .3s;width:0"></div></div></div>'
+          + '<div class="i-fs-tl"><div class="i-fs-tl-bar" style="min-width:' + Math.max(lesson.sequence.length * 80, 320) + 'px">' + fsSegs + '</div></div>'
+          + '<div class="i-fs-card-area"><div class="i-fs-card-track">' + fsCards + '</div>'
+          + '<div class="i-fs-arrows"><button class="i-fs-arr i-fs-prev" aria-label="上一步">‹</button><button class="i-fs-arr i-fs-next" aria-label="下一步">›</button></div></div>'
+          + '<div class="i-fs-footer"><span class="i-fs-counter"></span><button class="i-fs-dm" onclick="toggleDark()">深色模式</button></div>'
+          + '</div>';
+
+        // Inline cue cards (smaller preview in the tab)
+        var progSegs = lesson.sequence.map(function(s, i) {
+          var min = parseDur(s.duration);
+          var pct = totalMin > 0 ? (min / totalMin * 100) : (100 / lesson.sequence.length);
+          return '<div class="i-cue-prog-seg" style="flex:' + pct + '" data-idx="' + i + '"></div>';
+        }).join('');
+
+        var inlineCards = lesson.sequence.map(function(s, i) {
+          var noteText = (s.note || '').replace(/</g, '&lt;');
+          var needsExpand = noteText.length > 200;
+          return '<div class="i-cue-card"><div class="i-cue-header"><div class="i-cue-step">' + s.step + '</div><div class="i-cue-dur">' + s.duration + '</div></div><div class="i-cue-note' + (needsExpand ? ' collapsed' : '') + '">' + noteText + '</div>' + (needsExpand ? '<button class="i-cue-expand">展开全部</button>' : '') + '</div>';
+        }).join('');
+
+        cueTabContent = '<div style="text-align:center;margin-bottom:24px"><button class="btn" style="display:inline-flex;align-items:center;gap:8px;font-family:var(--font-u);font-size:16px;font-weight:600;padding:16px 36px;border-radius:100px;border:none;cursor:pointer;background:var(--primary);color:#fff;box-shadow:var(--shadow-lg);transition:all .2s" onclick="_openFsCue()">进入全屏口令模式 ↗</button><p style="font-size:13px;color:var(--fg3);margin-top:12px">全屏显示教学口令卡，支持键盘左右箭头翻页，Esc 退出</p></div>'
+          + '<div class="i-cue-wrap"><div class="i-cue-progress">' + progSegs + '</div><div class="i-cue-track">' + inlineCards + '</div><div class="i-cue-arrows"><button class="i-cue-arr i-cue-prev" aria-label="上一步">‹</button><button class="i-cue-arr i-cue-next" aria-label="下一步">›</button></div><div class="i-cue-counter"></div></div>';
+
+        // Attach fullscreen overlay to body (outside container)
+        navHtml = navHtml + fsOverlay;
+      }
+
+      // ── Tabs ──
+      var cueBadge = (lesson.sequence && lesson.sequence.length) ? '<span class="i-tab-badge">' + lesson.sequence.length + '</span>' : '';
+      var tabsHtml = '<div class="i-tabs"><button class="i-tab i-tab-active" data-tab="tab-overview">备课参考</button><button class="i-tab" data-tab="tab-cue"><span class="i-tab-icon">🗣</span> 口令演示 ' + cueBadge + '</button></div>';
+
       // ── Assemble page ──
-      var body = navHtml + '<div class="i-container">' + headerHtml + objHtml + timelineHtml + cueHtml + poseHtml + kpHtml + safetyHtml + lessonNavHtml + '</div>' + floatHtml;
+      var body = navHtml + '<div class="i-container">' + headerHtml + tabsHtml
+        + '<div class="i-tab-content i-tab-active" id="tab-overview">' + overviewContent + '</div>'
+        + (cueTabContent ? '<div class="i-tab-content" id="tab-cue">' + cueTabContent + '</div>' : '')
+        + '</div>' + floatHtml;
 
       var file = path.join(__dirname, 'instructor', course.id + '-' + num + '.html');
       fs.writeFileSync(file, instructorPage('第' + lesson.num + '课 ' + lesson.title + ' — ' + course.name, body), 'utf8');
