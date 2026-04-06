@@ -64,6 +64,9 @@ nav.scrolled{box-shadow:0 1px 8px rgba(42,42,40,.06)}
 .hero::before{content:'';position:absolute;inset:0;
   background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(58,82,72,.04),transparent 70%),
              radial-gradient(ellipse 60% 50% at 30% 70%,rgba(196,113,75,.03),transparent 60%);pointer-events:none}
+.hero-bg{position:absolute;inset:0;z-index:0;pointer-events:none;display:flex;align-items:flex-end;justify-content:center}
+.hero-bg svg{width:100%;max-width:800px;height:auto;opacity:.85}
+.hero>*:not(.hero-bg){position:relative;z-index:1}
 
 /* Breathing circle */
 .breath-wrap{position:relative;width:180px;height:180px;margin-bottom:40px}
