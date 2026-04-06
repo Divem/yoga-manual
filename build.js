@@ -164,20 +164,131 @@ var COURSES = [
 
 // ── Hero pose mapping for course intro pages ──
 var HERO_POSES = {
-  'yoga-basics':       {poseId:'tadasana',             name:'山式',   en:'Tadasana'},
-  'hatha':             {poseId:'adho_mukha_svanasana',  name:'下犬式', en:'Adho Mukha Svanasana'},
-  'restorative':       {poseId:'balasana',              name:'婴儿式', en:'Balasana'},
-  'vinyasa':           {poseId:'virabhadrasana1',       name:'战士一式', en:'Virabhadrasana I'},
-  'iyengar':           {poseId:'trikonasana',           name:'三角伸展式', en:'Trikonasana'},
-  'yin':               {poseId:'baddha_konasana',       name:'蝴蝶式', en:'Baddha Konasana'},
-  'ashtanga':          {poseId:'paschimottanasana',     name:'前屈式', en:'Paschimottanasana'},
-  'hip-opening':       {poseId:'baddha_konasana',       name:'束角式', en:'Baddha Konasana'},
-  'backbend':          {poseId:'urdhva_dhanurasana',    name:'轮式',   en:'Urdhva Dhanurasana'},
-  'inversion':         {poseId:'sirsasana',             name:'头倒立', en:'Sirsasana'},
-  'meditation-pranayama':{poseId:'padmasana',           name:'莲花坐', en:'Padmasana'},
-  'prenatal':          {poseId:'utkata_konasana',       name:'女神式', en:'Utkata Konasana'},
-  'spine-therapy':     {poseId:'marjaryasana',          name:'猫牛式', en:'Marjaryasana-Bitilakasana'},
+  'yoga-basics':       {poseId:'tadasana',             name:'山式',   en:'Tadasana',
+    colors:{skin:'#EDCAAD',hair:'#4E342E',top:'#7BA68C',bottom:'#4A5568',bg:'#7BA68C',accent:'#A8D5BA'}},
+  'hatha':             {poseId:'adho_mukha_svanasana',  name:'下犬式', en:'Adho Mukha Svanasana',
+    colors:{skin:'#EDCAAD',hair:'#4E342E',top:'#C4714B',bottom:'#5D4037',bg:'#C4714B',accent:'#F5C1A8'}},
+  'restorative':       {poseId:'balasana',              name:'婴儿式', en:'Balasana',
+    colors:{skin:'#EDCAAD',hair:'#4E342E',top:'#9FA8DA',bottom:'#6B7B8D',bg:'#9FA8DA',accent:'#C5CAE9'}},
+  'vinyasa':           {poseId:'virabhadrasana1',       name:'战士一式', en:'Virabhadrasana I',
+    colors:{skin:'#EDCAAD',hair:'#4E342E',top:'#E57373',bottom:'#4A5568',bg:'#E57373',accent:'#FFCDD2'}},
+  'iyengar':           {poseId:'trikonasana',           name:'三角伸展式', en:'Trikonasana',
+    colors:{skin:'#EDCAAD',hair:'#4E342E',top:'#5C6BC0',bottom:'#37474F',bg:'#5C6BC0',accent:'#9FA8DA'}},
+  'yin':               {poseId:'baddha_konasana',       name:'蝴蝶式', en:'Baddha Konasana',
+    colors:{skin:'#EDCAAD',hair:'#4E342E',top:'#CE93D8',bottom:'#6B5B73',bg:'#CE93D8',accent:'#E1BEE7'}},
+  'ashtanga':          {poseId:'paschimottanasana',     name:'前屈式', en:'Paschimottanasana',
+    colors:{skin:'#EDCAAD',hair:'#4E342E',top:'#B71C1C',bottom:'#37474F',bg:'#C62828',accent:'#EF9A9A'}},
+  'hip-opening':       {poseId:'baddha_konasana',       name:'束角式', en:'Baddha Konasana',
+    colors:{skin:'#EDCAAD',hair:'#4E342E',top:'#26A69A',bottom:'#4A5568',bg:'#26A69A',accent:'#80CBC4'}},
+  'backbend':          {poseId:'urdhva_dhanurasana',    name:'轮式',   en:'Urdhva Dhanurasana',
+    colors:{skin:'#EDCAAD',hair:'#4E342E',top:'#FFB74D',bottom:'#5D4037',bg:'#FFB74D',accent:'#FFE0B2'}},
+  'inversion':         {poseId:'sirsasana',             name:'头倒立', en:'Sirsasana',
+    colors:{skin:'#EDCAAD',hair:'#4E342E',top:'#7E57C2',bottom:'#4A5568',bg:'#7E57C2',accent:'#D1C4E9'}},
+  'meditation-pranayama':{poseId:'padmasana',           name:'莲花坐', en:'Padmasana',
+    colors:{skin:'#EDCAAD',hair:'#4E342E',top:'#FFD54F',bottom:'#5D4037',bg:'#F9A825',accent:'#FFF9C4'}},
+  'prenatal':          {poseId:'utkata_konasana',       name:'女神式', en:'Utkata Konasana',
+    colors:{skin:'#EDCAAD',hair:'#4E342E',top:'#F48FB1',bottom:'#7B6B7D',bg:'#F48FB1',accent:'#F8BBD0'}},
+  'spine-therapy':     {poseId:'marjaryasana',          name:'猫牛式', en:'Marjaryasana-Bitilakasana',
+    colors:{skin:'#EDCAAD',hair:'#4E342E',top:'#8D9E72',bottom:'#4A5568',bg:'#8D9E72',accent:'#C5D8A4'}},
 };
+
+// ── Colorful hero SVG renderer (richer, more human-like) ──
+function heroSvg(poseId, colors) {
+  var pose = POSES[poseId];
+  if (!pose) return '';
+  var w = 200, s = 1, h = 280;
+  var c = colors;
+
+  function pt(a) { return [Math.round(a[0]*s), Math.round(a[1]*s)]; }
+  function q(a,b,cc) {
+    var a1=pt(a),b1=pt(b),c1=pt(cc);
+    return 'M'+a1[0]+','+a1[1]+' Q'+b1[0]+','+b1[1]+' '+c1[0]+','+c1[1];
+  }
+  var p = pose;
+  var hd=pt(p.head), nk=pt(p.neck), sl=pt(p.sL), sr=pt(p.sR);
+  var hl=pt(p.hiL), hr=pt(p.hiR), hp=pt(p.hip);
+
+  var sv = '<svg viewBox="0 0 200 280" width="200" height="280" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto">';
+
+  // Defs: gradient for background
+  sv += '<defs>';
+  sv += '<radialGradient id="heroBg"><stop offset="0%" stop-color="'+c.accent+'" stop-opacity=".35"/><stop offset="100%" stop-color="'+c.accent+'" stop-opacity="0"/></radialGradient>';
+  sv += '<radialGradient id="heroGlow"><stop offset="0%" stop-color="'+c.bg+'" stop-opacity=".18"/><stop offset="100%" stop-color="'+c.bg+'" stop-opacity="0"/></radialGradient>';
+  sv += '</defs>';
+
+  // Background glow
+  sv += '<circle cx="100" cy="130" r="105" fill="url(#heroBg)"/>';
+  sv += '<circle cx="100" cy="130" r="68" fill="url(#heroGlow)"/>';
+
+  // Decorative dots
+  sv += '<circle cx="38" cy="65" r="3" fill="'+c.accent+'" opacity=".5"/>';
+  sv += '<circle cx="165" cy="85" r="2.5" fill="'+c.accent+'" opacity=".4"/>';
+  sv += '<circle cx="52" cy="195" r="2" fill="'+c.accent+'" opacity=".35"/>';
+  sv += '<circle cx="155" cy="200" r="3.5" fill="'+c.accent+'" opacity=".3"/>';
+  sv += '<circle cx="45" cy="130" r="1.8" fill="'+c.bg+'" opacity=".3"/>';
+  sv += '<circle cx="160" cy="140" r="2.2" fill="'+c.bg+'" opacity=".25"/>';
+
+  // Ground shadow (soft ellipse)
+  sv += '<ellipse cx="100" cy="270" rx="60" ry="5" fill="'+c.bg+'" opacity=".12"/>';
+
+  // ── Legs (thick, rounded, legging color) ──
+  var legW = 7;
+  sv += '<path d="'+q(p.hiL,p.kL,p.fL)+'" fill="none" stroke="'+c.bottom+'" stroke-width="'+legW+'" stroke-linecap="round"/>';
+  sv += '<path d="'+q(p.hiR,p.kR,p.fR)+'" fill="none" stroke="'+c.bottom+'" stroke-width="'+legW+'" stroke-linecap="round"/>';
+
+  // Feet (small circles)
+  var fl=pt(p.fL), fr=pt(p.fR);
+  sv += '<circle cx="'+fl[0]+'" cy="'+fl[1]+'" r="3" fill="'+c.bottom+'"/>';
+  sv += '<circle cx="'+fr[0]+'" cy="'+fr[1]+'" r="3" fill="'+c.bottom+'"/>';
+
+  // ── Torso (filled shape = clothing) ──
+  // Build a rounded body shape: shoulders → hips
+  var bodyPad = 5;
+  sv += '<path d="M'+(sl[0]-bodyPad)+','+(sl[1])+' Q'+nk[0]+','+(nk[1]-4)+' '+(sr[0]+bodyPad)+','+sr[1]+' L'+(hr[0]+3)+','+hr[1]+' Q'+hp[0]+','+(hp[1]+6)+' '+(hl[0]-3)+','+hl[1]+' Z" fill="'+c.top+'" opacity=".9"/>';
+
+  // Torso highlight (subtle lighter stripe)
+  sv += '<path d="M'+nk[0]+','+nk[1]+' L'+hp[0]+','+hp[1]+'" stroke="'+c.accent+'" stroke-width="3" stroke-linecap="round" opacity=".3"/>';
+
+  // ── Shoulders (thick, round = clothing) ──
+  sv += '<path d="'+q(p.sL,[((p.sL[0]+p.sR[0])/2),((p.sL[1]+p.sR[1])/2)],p.sR)+'" fill="none" stroke="'+c.top+'" stroke-width="8" stroke-linecap="round" opacity=".9"/>';
+
+  // ── Arms (skin color, thick & rounded) ──
+  var armW = 5;
+  // Upper arm slightly thicker
+  sv += '<path d="'+q(p.sL,p.eL,p.hL)+'" fill="none" stroke="'+c.skin+'" stroke-width="'+armW+'" stroke-linecap="round"/>';
+  sv += '<path d="'+q(p.sR,p.eR,p.hR)+'" fill="none" stroke="'+c.skin+'" stroke-width="'+armW+'" stroke-linecap="round"/>';
+  // Hands (small circles)
+  var handL=pt(p.hL), handR=pt(p.hR);
+  sv += '<circle cx="'+handL[0]+'" cy="'+handL[1]+'" r="2.8" fill="'+c.skin+'"/>';
+  sv += '<circle cx="'+handR[0]+'" cy="'+handR[1]+'" r="2.8" fill="'+c.skin+'"/>';
+
+  // ── Neck (skin) ──
+  sv += '<path d="M'+hd[0]+','+(hd[1]+10)+' L'+nk[0]+','+nk[1]+'" stroke="'+c.skin+'" stroke-width="5" stroke-linecap="round"/>';
+
+  // ── Head (skin filled, larger) ──
+  var headR = 15;
+  sv += '<circle cx="'+hd[0]+'" cy="'+hd[1]+'" r="'+headR+'" fill="'+c.skin+'"/>';
+
+  // ── Hair (dark, top half cap + bun) ──
+  // Hair cap: semicircle on top half
+  sv += '<path d="M'+(hd[0]-headR)+','+hd[1]+' A'+headR+','+headR+' 0 0,1 '+(hd[0]+headR)+','+hd[1]+'" fill="'+c.hair+'"/>';
+  // Hair bun on top
+  sv += '<circle cx="'+hd[0]+'" cy="'+(hd[1]-headR-3)+'" r="6" fill="'+c.hair+'"/>';
+  // Hairband accent
+  sv += '<path d="M'+(hd[0]-headR+1)+','+hd[1]+' Q'+hd[0]+','+(hd[1]-3)+' '+(hd[0]+headR-1)+','+hd[1]+'" fill="none" stroke="'+c.top+'" stroke-width="1.5" opacity=".7"/>';
+
+  // ── Face (minimal: two eyes + gentle smile) ──
+  sv += '<circle cx="'+(hd[0]-5)+'" cy="'+(hd[1]+3)+'" r="1.3" fill="'+c.hair+'"/>';
+  sv += '<circle cx="'+(hd[0]+5)+'" cy="'+(hd[1]+3)+'" r="1.3" fill="'+c.hair+'"/>';
+  // Blush
+  sv += '<circle cx="'+(hd[0]-8)+'" cy="'+(hd[1]+6)+'" r="2.5" fill="#F8BBD0" opacity=".35"/>';
+  sv += '<circle cx="'+(hd[0]+8)+'" cy="'+(hd[1]+6)+'" r="2.5" fill="#F8BBD0" opacity=".35"/>';
+  // Smile
+  sv += '<path d="M'+(hd[0]-3)+','+(hd[1]+8)+' Q'+hd[0]+','+(hd[1]+11)+' '+(hd[0]+3)+','+(hd[1]+8)+'" fill="none" stroke="'+c.hair+'" stroke-width=".8" stroke-linecap="round"/>';
+
+  sv += '</svg>';
+  return sv;
+}
 
 var CAT_LABELS = {foundation:'基础课程',progressive:'进阶课程',workshop:'专题工作坊'};
 var LVL_LABELS = ['','零基础','基础','进阶','高阶'];
@@ -215,10 +326,10 @@ COURSES.forEach(function(course){
 
   // Course intro HTML — hero illustration at top
   var introHtml = '';
-  var hero = HERO_POSES[course.id];
-  if (hero) {
-    var heroSvg = poseSvg(hero.poseId, {width:160, showLabel:false, color:color});
-    introHtml += '<div class="ci-hero">' + heroSvg + '<div class="ci-hero-name">' + hero.name + '</div><div class="ci-hero-en">' + hero.en + '</div></div>';
+  var heroData = HERO_POSES[course.id];
+  if (heroData) {
+    var heroIll = heroSvg(heroData.poseId, heroData.colors);
+    introHtml += '<div class="ci-hero">' + heroIll + '<div class="ci-hero-name">' + heroData.name + '</div><div class="ci-hero-en">' + heroData.en + '</div></div>';
   }
   if (course.desc) {
     introHtml += '<div class="ci-section"><p class="ci-desc">' + course.desc + '</p></div>';
