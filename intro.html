@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#3A5248">
+<meta name="theme-color" content="#3A5248" id="themeColor">
 <title>O-YOGA瑜伽原 — 为你的瑜伽馆打造专属课程平台</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,7 +15,7 @@
   --fg:#2A2A28;--fg2:#6B6560;--fg3:#9E9790;
   --primary:#3A5248;--primary-h:#2D4038;--primary-l:rgba(58,82,72,.07);
   --accent:#C4714B;--accent-h:#A85D3B;--accent-l:rgba(196,113,75,.09);
-  --sand:#D4C5B5;--cream:#F7F3ED;
+  --sand:#D4C5B5;--cream:#F7F3ED;--workshop:#8B6F4E;
   --border:#E5DED5;
   --shadow:0 1px 3px rgba(42,42,40,.05),0 8px 24px rgba(42,42,40,.04);
   --shadow-lg:0 4px 12px rgba(42,42,40,.06),0 20px 48px rgba(42,42,40,.08);
@@ -23,6 +23,16 @@
   --font-d:'Fraunces',Georgia,'Noto Serif SC',serif;
   --font-b:-apple-system,'PingFang SC','Hiragino Sans GB','Microsoft YaHei','Noto Sans SC',sans-serif;
   --font-u:'Work Sans',-apple-system,'PingFang SC',sans-serif;
+}
+[data-theme="purple"]{
+  --primary:#6B4C9A;--primary-h:#573D82;--primary-l:rgba(107,76,154,.08);
+  --accent:#D4726A;--accent-h:#B85D55;--accent-l:rgba(212,114,106,.09);
+  --workshop:#9C7CB8;
+}
+[data-theme="ocean"]{
+  --primary:#2B6A7C;--primary-h:#1D5566;--primary-l:rgba(43,106,124,.08);
+  --accent:#E8915A;--accent-h:#CC7A48;--accent-l:rgba(232,145,90,.09);
+  --workshop:#5A9EAE;
 }
 html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
 body{font-family:var(--font-b);background:var(--bg);color:var(--fg);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
@@ -489,6 +499,16 @@ document.querySelectorAll('.pain-grid, .feature-grid, .course-showcase, .workflo
   }, { threshold: 0.1 });
   cObs.observe(container);
 });
+</script>
+
+<script>
+const THEME_COLORS={sage:'#3A5248',purple:'#6B4C9A',ocean:'#2B6A7C'};
+(function(){
+  var t=localStorage.getItem('yoga-theme')||'sage';
+  document.documentElement.setAttribute('data-theme',t);
+  var tc=document.getElementById('themeColor');
+  if(tc) tc.content=THEME_COLORS[t]||THEME_COLORS.sage;
+})();
 </script>
 </body>
 </html>

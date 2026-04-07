@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#3A5248">
+<meta name="theme-color" content="#3A5248" id="themeColor">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>O-YOGA瑜伽原 — 课程体系</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,6 +17,7 @@
   --primary:#3A5248;--primary-h:#2D4038;--primary-l:rgba(58,82,72,.07);
   --accent:#C4714B;--accent-h:#A85D3B;--accent-l:rgba(196,113,75,.09);
   --terracotta:#C4714B;--sage:#3A5248;--sand:#D4C5B5;--cream:#F7F3ED;
+  --workshop:#8B6F4E;
   --border:#E5DED5;--shadow:0 1px 3px rgba(42,42,40,.05),0 8px 24px rgba(42,42,40,.04);
   --shadow-lg:0 4px 12px rgba(42,42,40,.06),0 20px 48px rgba(42,42,40,.08);
   --radius:14px;--radius-lg:22px;
@@ -24,6 +25,17 @@
   --font-b:-apple-system,'PingFang SC','Hiragino Sans GB','Microsoft YaHei','Noto Sans SC',sans-serif;
   --font-u:'Work Sans',-apple-system,'PingFang SC',sans-serif;
   --nav-h:56px;--safe-b:env(safe-area-inset-bottom,0px);
+}
+/* ─── THEME OVERRIDES ─── */
+[data-theme="purple"]{
+  --primary:#6B4C9A;--primary-h:#573D82;--primary-l:rgba(107,76,154,.08);
+  --accent:#D4726A;--accent-h:#B85D55;--accent-l:rgba(212,114,106,.09);
+  --workshop:#9C7CB8;
+}
+[data-theme="ocean"]{
+  --primary:#2B6A7C;--primary-h:#1D5566;--primary-l:rgba(43,106,124,.08);
+  --accent:#E8915A;--accent-h:#CC7A48;--accent-l:rgba(232,145,90,.09);
+  --workshop:#5A9EAE;
 }
 html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
 body{font-family:var(--font-b);background:var(--bg);color:var(--fg);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
@@ -67,6 +79,22 @@ nav.scrolled{box-shadow:0 1px 8px rgba(42,42,40,.06)}
 .mobile-menu a:nth-child(4){transition-delay:.15s}
 .mobile-menu a:nth-child(5){transition-delay:.2s}
 .mobile-menu a:active{color:var(--accent)}
+
+/* ─── THEME PICKER ─── */
+.theme-picker{position:relative}
+.theme-btn{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--border);background:var(--bg-card);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;padding:0}
+.theme-btn:hover{border-color:var(--accent)}
+.theme-dot{width:14px;height:14px;border-radius:50%;background:var(--primary);transition:background .3s}
+.theme-dropdown{position:absolute;top:calc(100% + 6px);right:0;min-width:130px;background:var(--bg-card);
+  border-radius:var(--radius);box-shadow:var(--shadow-lg);border:1px solid var(--border);
+  padding:6px;z-index:200;opacity:0;pointer-events:none;transform:translateY(-4px);transition:all .2s}
+.theme-dropdown.open{opacity:1;pointer-events:all;transform:translateY(0)}
+.theme-opt{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:none;background:none;
+  cursor:pointer;border-radius:8px;font-family:var(--font-b);font-size:14px;color:var(--fg);transition:background .15s;text-align:left}
+.theme-opt:hover{background:var(--primary-l)}
+.theme-opt.active{background:var(--primary-l);font-weight:600}
+.theme-swatch{width:20px;height:20px;border-radius:6px;flex-shrink:0;border:1px solid rgba(0,0,0,.06)}
 
 /* ─── HERO ─── */
 .hero{min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -343,9 +371,21 @@ footer .brand{font-family:var(--font-d);font-style:italic;color:var(--accent);fo
 <!-- NAV -->
 <nav id="nav">
   <div class="nav-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})">O-YOGA<span>瑜伽原</span></div>
-  <button class="nav-menu-btn" id="menuBtn" aria-label="菜单">
-    <span></span><span></span><span></span>
-  </button>
+  <div style="display:flex;align-items:center;gap:8px">
+    <div class="theme-picker" id="themePicker">
+      <button class="theme-btn" onclick="toggleThemePicker(event)" aria-label="切换主题">
+        <span class="theme-dot" id="themeDot"></span>
+      </button>
+      <div class="theme-dropdown" id="themeDropdown">
+        <button class="theme-opt" onclick="setTheme('sage')"><span class="theme-swatch" style="background:#3A5248"></span>鼠尾草</button>
+        <button class="theme-opt" onclick="setTheme('purple')"><span class="theme-swatch" style="background:#6B4C9A"></span>紫藤花</button>
+        <button class="theme-opt" onclick="setTheme('ocean')"><span class="theme-swatch" style="background:#2B6A7C"></span>海洋蓝</button>
+      </div>
+    </div>
+    <button class="nav-menu-btn" id="menuBtn" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
 </nav>
 
 <!-- Mobile Menu -->
@@ -535,7 +575,7 @@ const CATEGORIES = [
 const CAT_META = {
   foundation:{label:'Foundation',desc:'适合零基础或初学者，建立正确的练习习惯和身体意识',accent:'var(--primary)'},
   progressive:{label:'Progressive',desc:'在基础之上发展力量、柔韧性和专注力，探索不同流派风格',accent:'var(--accent)'},
-  workshop:{label:'Workshop',desc:'针对特定目标的主题深入课程，可独立参加也可作为常规课程的补充',accent:'#8B6F4E'}
+  workshop:{label:'Workshop',desc:'针对特定目标的主题深入课程，可独立参加也可作为常规课程的补充',accent:'var(--workshop)'}
 };
 
 const COURSES = [
@@ -828,7 +868,7 @@ function openSheet(id){
   const lvl=Array.isArray(c.level)?c.level[0]:c.level;
   const lvlLabels=['','零基础','基础','进阶','高阶'];
   sheet.style.setProperty('--card-accent',
-    c.cat==='foundation'?'var(--primary)':c.cat==='progressive'?'var(--accent)':'#8B6F4E');
+    c.cat==='foundation'?'var(--primary)':c.cat==='progressive'?'var(--accent)':'var(--workshop)';
   document.getElementById('sheetTitle').textContent=c.name;
   document.getElementById('sheetEn').textContent=c.nameEn;
   document.getElementById('sheetBody').innerHTML=`
@@ -919,6 +959,40 @@ function closeMenu(){
 window.addEventListener('scroll',()=>{
   document.getElementById('nav').classList.toggle('scrolled',window.scrollY>10);
 },{passive:true});
+
+// ─── THEME ───
+const THEME_COLORS={sage:'#3A5248',purple:'#6B4C9A',ocean:'#2B6A7C'};
+function initTheme(){
+  const t=localStorage.getItem('yoga-theme')||'sage';
+  document.documentElement.setAttribute('data-theme',t);
+  document.getElementById('themeDot').style.background=THEME_COLORS[t]||THEME_COLORS.sage;
+  const tc=document.getElementById('themeColor');
+  if(tc) tc.content=THEME_COLORS[t]||THEME_COLORS.sage;
+  document.querySelectorAll('.theme-opt').forEach(b=>{
+    b.classList.toggle('active',b.textContent.includes(t==='sage'?'鼠尾草':t==='purple'?'紫藤花':'海洋蓝'));
+  });
+}
+function setTheme(t){
+  localStorage.setItem('yoga-theme',t);
+  document.documentElement.setAttribute('data-theme',t);
+  document.getElementById('themeDot').style.background=THEME_COLORS[t]||THEME_COLORS.sage;
+  const tc=document.getElementById('themeColor');
+  if(tc) tc.content=THEME_COLORS[t]||THEME_COLORS.sage;
+  document.querySelectorAll('.theme-opt').forEach(b=>{
+    b.classList.toggle('active',b.textContent.includes(t==='sage'?'鼠尾草':t==='purple'?'紫藤花':'海洋蓝'));
+  });
+  closeThemePicker();
+}
+function toggleThemePicker(e){
+  e.stopPropagation();
+  const dd=document.getElementById('themeDropdown');
+  dd.classList.toggle('open');
+}
+function closeThemePicker(){
+  document.getElementById('themeDropdown').classList.remove('open');
+}
+document.addEventListener('click',closeThemePicker);
+initTheme();
 
 // ─── INIT ───
 renderTabs();
